@@ -1,0 +1,85 @@
+<div *ngIf="mostrarMensaje" class="row justify-content-around">
+    <div class="col-md-5">
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            Codigo analizado
+            <button (click)="desactivarMensaje()" type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    </div>
+</div>
+<div *ngIf="mostrarMensajeError" class="row justify-content-around">
+    <div class="col-md-5">
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            Error al cargar el codigo
+            <button (click)="desactivarMensaje()" type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="rounded card shadow-lg o-hidden border-0 my-5">
+        <div class="card-body p-0" style="background-color: rgb(19, 15, 15);">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="p-4">
+                        <div class="">
+                            <h4 style="color: aliceblue;">Editor</h4>
+                        </div>
+                        <form class="user">
+                            <div class="form-group row">
+                                <div class="col-sm-12">
+                                    <textarea [formControl]="codigo" class="form-control form-control-user" id="editor"
+                                         name="tiendas" rows="15"
+                                        class="col-sm-12"></textarea>
+
+                                </div>
+                            </div>
+                            <div class="row justify-content-center">
+                                <div class="col-sm-4">
+                                    <button (click)="analizar_codigo()" class="btn btn-success"
+                                        type="submit">Ejecutar</button>
+                                    <button (click)="analizar_codigo()" class="btn btn-outline-primary"
+                                        type="submit">Crear</button>
+                                    <button (click)="analizar_codigo()" class="btn btn-outline-secondary"
+                                        type="submit">Guardar</button>
+                                    <button (click)="analizar_codigo()" class="btn btn-outline-success"
+                                        type="submit">Abrir</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="container">
+    <div class="rounded card shadow-lg o-hidden border-0 my-5">
+        <div class="card-body p-0" style="background-color: rgb(19, 15, 15);">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="p-4">
+                        <div class="">
+                            <h4 style="color: aliceblue;">Salida</h4>
+                        </div>
+                        <form class="user">
+                            <div class="form-group row">
+                                <div class="col-sm-12">
+                                    <textarea [formControl]="salida" class="form-control form-control-user" id="editor"
+                                         name="tiendas" rows="6"
+                                        class="col-sm-12"></textarea>
+
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
