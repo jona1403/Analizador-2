@@ -12,6 +12,7 @@
 "Boolean"           return 'BOOLEAN';
 "Char"              return 'CHAR';
 "String"            return 'STRING';
+"new"				return 'NEW';
 "void"              return 'VOID';
 "if"                return 'IF';
 "else"              return 'ELSE';
@@ -37,7 +38,7 @@
 
 
 
-//Expresiones regulares
+//expresiones regulares
 [ \r\t\n]+            {}
 //Comentario multilinea
 \/\*([^\"])*\*\/      {}
@@ -67,8 +68,8 @@
 \*                     return 'RMULTIPLICACION';
 \+                     return 'RMAS';
 \-                     return 'RMENOS';
-[0-9]+\b               return 'RENTERO';
-[0-9]+(\.[0-9]+)?\b    return 'RDECIMAL';
+(\-)?[0-9]+\b               return 'RENTERO';
+(\-)?[0-9]+(\.[0-9]+)?\b    return 'RDECIMAL';
 [A-Za-z0-9_-]          return 'RCARACTER';
 (true|1)               return 'RTRUE';
 (false|0)              return 'RFALSE';
@@ -92,7 +93,7 @@
 .                       { console.error('Este es un error léxico: ' + yytext + ', en la linea: ' + yylloc.first_line + ', en la columna: ' + yylloc.first_column); }
 /lex
 
-%left  'RDIVISION' 'RMULTIPLICACION'
+%left  'RDIVISION' 'RMULTIPLICACION' 'RPOTENCIA' 'RMODULO'
 %left  'RMAS' 'RMENOS'
 %left  'RELIGUAL' 'RELDIFERENCIA' 'RELMENOR' 'RELMENORIGUAL' 'RELMAYOR' 'RELMAYORIGUAL'
 %right 'RNOT'
@@ -111,21 +112,97 @@ ini
 ;
 
 instrucciones
-	: instruccion instrucciones
+	: instrucciones instruccion
 	| instruccion
 	| error { console.error('Este es un error sintáctico: ' + yytext + ', en la linea: ' + this._$.first_line + ', en la columna: ' + this._$.first_column); }
 ;
 
-instruccion
-	: INT STRING expresion CORDER PTCOMA {
-		console.log('El valor de la expresión es: ' + $3);
-	}
+instruccion: 
+	declaravar
+	| declararreglo
+	| asignvar
+	| IF RPARIZQ expresion RPARDER bloque
+	
 ;
 
-expresion
-	: expresion RMAS expresion       { $$ = $1 + $3; }
-	| expresion RMENOS expresion     { $$ = $1 - $3; }
+declaravar:
+	declara_tipo declaravar_2 asign RPTCOMA
+;
 
-	| RENTERO                        { $$ = Number($1); }
-	| RDECIMAL                       { $$ = Number($1); }
+declaravar_2:
+	declaravar_2 RCOMA RIDENTIFICADOR
+	| RIDENTIFICADOR
+;
+
+asign:
+	RIGUAL RPARIZQ declara_tipo RPARDER expresion 
+	| RIGUAL expresion
+	|
+;
+
+asignvar:
+	asignvar_2 RPTOCOMA
+;
+
+asignvar_2:
+	asignvar_2 RIGUAL expresion
+	| expresion
+;
+
+declararreglo:
+	declara_tipo RIDENTIFICADOR RCORIZQ RCORDER RCORIZQ RCORDER RIGUAL NEW declara_tipo RCORIZQ RENTERO RCORDER RCORIZQ RENTERO RCORDER RPTCOMA
+	| declara_tipo RIDENTIFICADOR RCORIZQ RCORDER RIGUAL NEW declara_tipo RCORIZQ RENTERO RCORDER RPTCOMA
+	| declara_tipo RIDENTIFICADOR RCORIZQ RCORDER RCORIZQ RCORDER RIGUAL RCORIZQ asignarray_2D RCORDER RPTCOMA
+	| declara_tipo RIDENTIFICADOR RCORIZQ RCORDER RIGUAL RCORIZQ asignarray RCORDER RPTCOMA
+;
+
+asignarray_2D:
+	asignarray_2D RCOMA RCORIZQ asignarray RCORDER
+	| RCORIZQ asignarray RCORDER
+;
+
+asignarray:
+	asignarray RCOMA expresion
+	| expresion
+;
+
+declara_tipo:
+	INT
+	| STRING
+	| CHAR
+	| DOUBLE
+;
+
+expresion:
+	expresion RELIGUAL expresion
+	| expresion RELDIFERENCIA expresion
+	| expresion RELMENOR expresion
+	| expresion RELMENORIGUAL expresion
+	| expresion RELMAYOR expresion
+	| expresion RELMAYORIGUAL expresion
+	| expresion ROR expresion
+	| expresion RAND expresion
+	| RNOT expresion
+	| RMENOS expresion %prec UMENOS
+	| expresion RMAS expresion
+	| expresion RMENOS expresion
+	| expresion RMULTIPLICACION expresion
+	| expresion RDIVISION expresion
+	| expresion RPOTENCIA expresion
+	| expresion RMODULO expresion
+	| RPARIZQ expresion RPARDER
+	| expresion RMAS RMAS
+	| expresion RMENOS RMENOS
+	| RENTERO
+	| RDECIMAL
+	| RCARACTER
+	| RSTRING
+	| RTRUE
+	| RFALSE
+	| RIDENTIFICADOR
+;
+
+bloque:
+	RLLAVEIZQ instrucciones RLLAVEDER
+	| RLLAVEIZQ RLLAVEDER
 ;
