@@ -1,7 +1,18 @@
-const parser = require('../grammar')
+const parser = require('../grammar/grammar')
 const express = require('express')
+//cargarCodigo
+
 const app = express()
 
-app.use(express.json())
+app.get('/', (req, res) => {
+    res.send("Escuchando")
+})
 
-const puerto = 3000
+app.post('/cargarCodigo', (req, res) => {
+    res.send('a')
+})
+
+
+app.listen(3000, () => {
+    console.log("Servidor en el puerto 3000")
+})
