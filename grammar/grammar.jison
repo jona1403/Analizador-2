@@ -48,13 +48,13 @@
 
 
 //Operadores relacionales
-\=\=                   return 'RELIGUAL';
-\!\=                   return 'RELDIFERENCIA';
-\<                     return 'RELMENOR';
-\<\=                   return 'RELMENORIGUAL';
-\>                     return 'RELMAYOR';
-\>\=                   return 'RELMAYORIGUAL';
 
+\!\=                   return 'RELDIFERENCIA';
+\<\=                   return 'RELMENORIGUAL';
+\<                     return 'RELMENOR';
+\>\=                   return 'RELMAYORIGUAL';
+\>                     return 'RELMAYOR';
+\=\=                   return 'RELIGUAL';
 //Operadores logicos
 \|\|                   return 'ROR';
 \&\&                   return 'RAND';
@@ -70,10 +70,9 @@
 \-                     return 'RMENOS';
 (\-)?[0-9]+\b               return 'RENTERO';
 (\-)?[0-9]+(\.[0-9]+)?\b    return 'RDECIMAL';
-[A-Za-z0-9_-]          return 'RCARACTER';
 (true|1)               return 'RTRUE';
 (false|0)              return 'RFALSE';
-\"([^\"|^\\]|\^|\\\"|\\\\|\\n|\\t|\\\')?\"        	return 'RSTRING';
+\"([^\"|^\\]|\^|\\\"|\\\\|\\n|\\t|\\\')*\"        	return 'RSTRING';
 \'([^\"|^\\]|\^|\\\"|\\\\|\\n|\\t|\\\')?\'			return 'RCHAR';
 \{                     return 'RLLAVEIZQ';
 \}                     return 'RLLAVEDER';
@@ -121,8 +120,22 @@ instruccion:
 	declaravar
 	| declararreglo
 	| asignvar
-	| IF RPARIZQ expresion RPARDER bloque
+	| IF RPARIZQ expresion RPARDER bloque instrelse
+	| WHILE RPARIZQ expresion RPARDER bloque
+	| DO bloque WHILE RPARIZQ expresion RPARDER RPTCOMA
+	| FOR RPARIZQ instrasnfor expresion RPTCOMA expresion RPARDER bloque
 	
+;
+
+instrasnfor:
+	declaravar
+	|  RPTCOMA
+;
+
+instrelse:
+	ELSE IF RPARIZQ expresion RPARDER instrelse
+	| ELSE bloque
+	|
 ;
 
 declaravar:
@@ -171,6 +184,8 @@ declara_tipo:
 	| STRING
 	| CHAR
 	| DOUBLE
+	| BOOLEAN
+	| VOID
 ;
 
 expresion:
@@ -195,7 +210,7 @@ expresion:
 	| expresion RMENOS RMENOS
 	| RENTERO
 	| RDECIMAL
-	| RCARACTER
+	| RCHAR
 	| RSTRING
 	| RTRUE
 	| RFALSE

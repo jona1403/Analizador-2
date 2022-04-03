@@ -27,7 +27,7 @@ export class EditorComponent implements OnInit {
     }
 
     this.ccodigoServicio.postCodigo(ed).subscribe((res:any)=>{
-      this.mostrarMensaje = true
+      //this.mostrarMensaje = true
     },(err)=>{
       this.mostrarMensajeError = true
     })
