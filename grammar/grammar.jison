@@ -121,19 +121,61 @@ instruccion:
 	| declararreglo
 	| asignvar
 	| IF RPARIZQ expresion RPARDER bloque instrelse
+	| SWITCH RPARIZQ expresion RPARDER instrswitch
 	| WHILE RPARIZQ expresion RPARDER bloque
 	| DO bloque WHILE RPARIZQ expresion RPARDER RPTCOMA
 	| FOR RPARIZQ instrasnfor expresion RPTCOMA expresion RPARDER bloque
-	
+	| BREAK RPTCOMA
+	| CONTINUE RPTCOMA
+	| RETURN instrreturn RPTCOMA
+	| RIDENTIFICADOR RPARIZQ instrparams RPARDER DOSPT declara_tipo bloque
+	| instrllamadas RPTCOMA
+	| PRINT RPARIZQ expresion RPARDER RPTCOMA
+	| PRINTLN RPARIZQ expresion RPARDER RPTCOMA
+	| TOLOWER RPARIZQ expresion RPARDER RPTCOMA
+	| TOUPPER RPARIZQ expresion RPARDER RPTCOMA
+	| ROUND RPARIZQ expresion RPARDER RPTCOMA
+;
+
+instrswitch:
+	RLLAVEIZQ instruccionesswitch RLLAVEDER
+	|RLLAVEIZQ RLLAVEDER
+;
+
+instruccionesswitch:
+	instruccionesswitch CASE expresion DOSPT bloquesw
+	| CASE expresion DOSPT bloquesw
+	| DEFAULT DOSPT bloquesw
+;
+
+instrllamadas:
+	RIDENTIFICADOR RPARIZQ instrparamsllamadas RPARDER
+	| RIDENTIFICADOR RPARIZQ RPARDER
+;
+
+instrparamsllamadas:
+	instrparamsllamadas RCOMA expresion
+	| expresion
+;
+
+instrparams:
+	instrparams RCOMA declara_tipo RIDENTIFICADOR
+	| declara_tipo RIDENTIFICADOR
+;
+
+instrreturn:
+	expresion
+	|
 ;
 
 instrasnfor:
 	declaravar
+	| RIDENTIFICADOR RIGUAL expresion RPTCOMA
 	|  RPTCOMA
 ;
 
 instrelse:
-	ELSE IF RPARIZQ expresion RPARDER instrelse
+	ELSE IF RPARIZQ expresion RPARDER bloque instrelse
 	| ELSE bloque
 	|
 ;
@@ -208,6 +250,7 @@ expresion:
 	| RPARIZQ expresion RPARDER
 	| expresion RMAS RMAS
 	| expresion RMENOS RMENOS
+	| instrllamadas
 	| RENTERO
 	| RDECIMAL
 	| RCHAR
@@ -220,4 +263,9 @@ expresion:
 bloque:
 	RLLAVEIZQ instrucciones RLLAVEDER
 	| RLLAVEIZQ RLLAVEDER
+;
+
+bloquesw:
+	instrucciones
+	|
 ;
